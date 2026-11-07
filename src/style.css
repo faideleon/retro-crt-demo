@@ -1,0 +1,94 @@
+:root {
+  --font: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --night: #0b0d16;
+  --ink: #2b2420;
+  --cream: #f6ecd6;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--night);
+  font-family: var(--font);
+}
+
+#stage, #stage canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hint {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 6px);
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 220, 170, 0.22);
+  border-radius: 999px;
+  background: rgba(20, 16, 14, 0.35);
+  color: rgba(255, 228, 190, 0.75);
+  font: 12px/1 var(--font);
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s ease, color 0.2s;
+  backdrop-filter: blur(4px);
+}
+.hint.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.hint:hover, .hint:focus-visible { color: #ffe9c8; outline: none; border-color: rgba(255, 220, 170, 0.5); }
+
+.mute {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 220, 170, 0.22);
+  border-radius: 6px;
+  background: rgba(20, 16, 14, 0.4);
+  color: rgba(255, 228, 190, 0.7);
+  font: 11px/1 var(--font);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.mute:hover, .mute:focus-visible { color: #ffe9c8; outline: none; }
+body.inside .mute { top: 38px; background: rgba(43, 36, 32, 0.7); }
+
+/* Arrival reward: pastel prism bloom */
+#prism {
+  position: fixed;
+  top: -38vh;
+  left: 50%;
+  width: min(1100px, 130vw);
+  height: 70vh;
+  z-index: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg at 50% 50%, #ff9ad5, #ffd36e, #8ef0c4, #7fd4ff, #b69bff, #ff9ad5);
+  filter: blur(70px) saturate(1.1);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform: translateX(-50%) scale(0.6);
+  pointer-events: none;
+}
+#prism.bloom { animation: bloom 2.6s cubic-bezier(.2, .7, .2, 1) forwards, drift 14s 2.6s ease-in-out infinite alternate; }
+@keyframes bloom {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.6); }
+  30% { opacity: 0.8; }
+  100% { opacity: 0.32; transform: translateX(-50%) scale(1); }
+}
+@keyframes drift {
+  from { opacity: 0.32; transform: translateX(-50%) scale(1) rotate(0deg); }
+  to { opacity: 0.22; transform: translateX(-50%) scale(1.06) rotate(14deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #prism.bloom { animation: none; opacity: 0.28; transform: translateX(-50%) scale(1); }
+  .hint { transition: none; }
+}
