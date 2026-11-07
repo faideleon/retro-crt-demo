@@ -35,6 +35,7 @@ html, body {
   color: rgba(255, 228, 190, 0.75);
   font: 12px/1 var(--font);
   letter-spacing: 0.12em;
+  white-space: nowrap;
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
@@ -59,7 +60,7 @@ html, body {
   cursor: pointer;
 }
 .mute:hover, .mute:focus-visible { color: #ffe9c8; outline: none; }
-body.inside .mute { top: 38px; background: rgba(43, 36, 32, 0.7); }
+body.inside .mute { top: auto; bottom: 14px; background: rgba(43, 36, 32, 0.7); }
 
 /* Arrival reward: pastel prism bloom */
 #prism {

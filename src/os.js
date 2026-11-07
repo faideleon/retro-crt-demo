@@ -36,7 +36,7 @@ const CONTENT = {
 export function createOS(root, { onPower, onClickSound }) {
   root.innerHTML = `
     <div class="menubar">
-      <b>◐ DummyOS</b><span>File</span><span>Edit</span><span>Special</span>
+      <b>◐ DummyOS</b><span>File</span><span class="opt">Edit</span><span class="opt">Special</span>
       <div class="spacer"></div>
       <span class="clock"></span>
       <button class="power" type="button" aria-label="Power off and leave">⏻ Power</button>

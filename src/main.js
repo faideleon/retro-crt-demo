@@ -46,7 +46,10 @@ function idlePose() {
   const A = window.innerWidth / window.innerHeight;
   const target = new THREE.Vector3(0, 0.52, 0.3);
   const dir = new THREE.Vector3(0.3, 0.22, 1).normalize();
-  const dist = 3.1 * Math.max(1, 1.35 / A);
+  const dist = 3.1 * Math.max(1, Math.pow(1.35 / A, 0.75));
+  // Keep the fog behind the computer however far back the camera sits.
+  S.scene.fog.near = dist + 1.2;
+  S.scene.fog.far = dist + 6.5;
   return { pos: target.clone().addScaledVector(dir, dist), target };
 }
 

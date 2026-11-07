@@ -114,3 +114,8 @@
 @media (prefers-reduced-motion: reduce) {
   .win, .win.closing { animation-duration: 0.01s; }
 }
+
+@media (max-width: 479px) {
+  .menubar { gap: 14px; }
+  .menubar .opt { display: none; }
+}

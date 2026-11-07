@@ -82,11 +82,12 @@ export function createScreenTexture() {
     let x = 12;
     ctx.font = `700 13px ${FONT}`;
     ctx.fillText('◐ DummyOS', x, y);
-    x += ctx.measureText('◐ DummyOS').width + 20;
+    const gap = vw < 480 ? 14 : 20;
+    x += ctx.measureText('◐ DummyOS').width + gap;
     ctx.font = `400 13px ${FONT}`;
-    for (const item of ['File', 'Edit', 'Special']) {
+    for (const item of vw < 480 ? ['File'] : ['File', 'Edit', 'Special']) {
       ctx.fillText(item, x, y);
-      x += ctx.measureText(item).width + 20;
+      x += ctx.measureText(item).width + gap;
     }
 
     // Right side: power button then clock
