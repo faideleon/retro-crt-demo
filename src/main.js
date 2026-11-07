@@ -103,6 +103,26 @@ const bezier = (a, c, b, t, out) => {
   S.camera.lookAt(camTarget);
 }
 screenTex.ready.then(() => screenTex.draw());
+
+/**
+ * Pick a scanline count so each line is ~3 CSS px tall in the idle view:
+ * fewer, chunkier lines on phones, more on big screens. Set once per viewport
+ * size (not per frame) so lines simply grow during the zoom instead of sliding.
+ */
+const PX_PER_LINE = 3;
+function updateScanlines() {
+  const p = idlePose();
+  const cam = S.camera.clone();
+  cam.position.copy(p.pos);
+  cam.lookAt(p.target);
+  cam.updateMatrixWorld();
+  pc.group.updateMatrixWorld(true);
+  const top = pc.screen.localToWorld(new THREE.Vector3(0, SCREEN.h / 2, 0)).project(cam);
+  const bot = pc.screen.localToWorld(new THREE.Vector3(0, -SCREEN.h / 2, 0)).project(cam);
+  const px = (Math.abs(top.y - bot.y) / 2) * window.innerHeight;
+  crt.uniforms.uLines.value = Math.round(Math.min(230, Math.max(40, px / PX_PER_LINE)));
+}
+updateScanlines();
 setInterval(() => { if (state !== 'inside') screenTex.draw(); }, 10_000);
 
 // ---------------------------------------------------------------- input
@@ -136,6 +156,7 @@ muteBtn.addEventListener('click', () => {
 
 window.addEventListener('resize', () => {
   S.resize();
+  updateScanlines();
   screenTex.draw();
   if (state === 'inside') {
     const p = screenPose();

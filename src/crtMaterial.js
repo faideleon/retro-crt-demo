@@ -55,10 +55,10 @@ export function createCrtMaterial(map) {
         col = mix(col, vec3(0.55, 0.78, 0.72), 0.06 * uCrt);
 
         // Scanlines, rolling bar, flicker
-        // Fade scanlines out when they get thinner than ~2 screen pixels, otherwise
-        // small/low-res screens (phones) show shimmering moire instead of lines.
+        // uLines is sized in JS so each line is ~3px in the idle view. This fade is
+        // only a safety net for lines thinner than ~2px (which would shimmer).
         float linesPerPx = uLines * fwidth(uv.y);
-        float slFade = 1.0 - smoothstep(0.25, 0.5, linesPerPx);
+        float slFade = 1.0 - smoothstep(0.4, 0.6, linesPerPx);
         float sl = 0.5 + 0.5 * cos(uv.y * uLines * 6.28318);
         col *= 1.0 - 0.24 * uCrt * sl * slFade;
         col *= 1.0 - 0.06 * uCrt * (1.0 - slFade); // keep the dimming when lines fade
