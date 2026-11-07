@@ -5,6 +5,7 @@ import { createCrtMaterial } from './crtMaterial.js';
 import { createScreenTexture } from './screenTexture.js';
 import { createOS } from './os.js';
 import * as sfx from './audio.js';
+import { createGyro } from './gyro.js';
 import { clamp01, lerp, smoothstep, easeOutCubic, easeDive, damp } from './tween.js';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -21,6 +22,21 @@ S.scene.add(pc.group);
 const hint = document.getElementById('hint');
 const prism = document.getElementById('prism');
 const muteBtn = document.getElementById('mute');
+
+// Gyro tilt on phones. iOS hides motion data behind a permission tap,
+// so show a small button there; Android starts listening right away.
+const gyro = createGyro();
+const tiltBtn = document.getElementById('tilt');
+if (gyro.needsPermission && noHover) {
+  // Only ask if no tilt data shows up on its own (iOS).
+  setTimeout(() => { if (!gyro.state.active) tiltBtn.hidden = false; }, 1200);
+  tiltBtn.addEventListener('click', async () => {
+    sfx.unlockAudio();
+    const ok = await gyro.requestPermission();
+    tiltBtn.textContent = ok ? 'tilt: on' : 'tilt: blocked';
+    setTimeout(() => (tiltBtn.hidden = true), 1200);
+  });
+}
 const os = createOS(document.getElementById('os'), { onPower: zoomOut, onClickSound: sfx.sClick });
 document.getElementById('os').prepend(prism);
 
@@ -260,7 +276,13 @@ function loop(now) {
     // Turn toward the cursor (or sway on touch devices).
     let yaw = 0, camX = 0, camY = 0;
     if (!reduced) {
-      if (noHover) {
+      if (gyro.state.active) {
+        tiltBtn.hidden = true;
+        // Phone tilt: same feel as the mouse, a touch stronger.
+        yaw = gyro.state.x * 0.18;
+        camX = gyro.state.x * 0.12;
+        camY = -gyro.state.y * 0.1;
+      } else if (noHover) {
         yaw = Math.sin(time * 0.35) * 0.07;
         camY = Math.sin(time * 0.23) * 0.03;
       } else {

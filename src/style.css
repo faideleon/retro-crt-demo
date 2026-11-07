@@ -60,6 +60,8 @@ html, body {
   cursor: pointer;
 }
 .mute:hover, .mute:focus-visible { color: #ffe9c8; outline: none; }
+.tilt { right: auto; left: 14px; }
+.tilt[hidden], body.inside .tilt { display: none; }
 body.inside .mute { top: auto; bottom: 14px; background: rgba(43, 36, 32, 0.7); }
 
 /* Arrival reward: pastel prism bloom */

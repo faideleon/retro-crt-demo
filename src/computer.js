@@ -44,7 +44,7 @@ export function createComputer(screenMaterial) {
   const screenY = monY + 0.04;
   add(new RoundedBoxGeometry(SCREEN.w + 0.07, SCREEN.h + 0.07, 0.02, 3, 0.03), bezel, 0, screenY, front);
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN.w, SCREEN.h), screenMaterial);
-  screen.position.set(0, screenY, front + 0.0105);
+  screen.position.set(0, screenY, front + 0.014);
   group.add(screen);
 
   add(new THREE.BoxGeometry(0.07, 0.014, 0.004), coral, -0.32, monY - 0.315, front + 0.001); // badge

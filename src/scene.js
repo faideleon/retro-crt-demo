@@ -18,7 +18,7 @@ export function createScene(container, { reduced }) {
   scene.background = new THREE.Color(NIGHT);
   scene.fog = new THREE.Fog(NIGHT, 4.5, 10);
 
-  const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 40);
+  const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.05, 30);
 
   // Desk surface: warm dark wood that disappears into the fog.
   const desk = new THREE.Mesh(

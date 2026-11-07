@@ -16,6 +16,10 @@ export function createCrtMaterial(map) {
       uLines: { value: 230 },
     },
     toneMapped: false,
+    // Always win the depth test against the bezel right behind it (no z-fighting on phones).
+    polygonOffset: true,
+    polygonOffsetFactor: -2,
+    polygonOffsetUnits: -2,
     vertexShader: /* glsl */ `
       varying vec2 vUv;
       void main() {
@@ -51,11 +55,17 @@ export function createCrtMaterial(map) {
         col = mix(col, vec3(0.55, 0.78, 0.72), 0.06 * uCrt);
 
         // Scanlines, rolling bar, flicker
+        // Fade scanlines out when they get thinner than ~2 screen pixels, otherwise
+        // small/low-res screens (phones) show shimmering moire instead of lines.
+        float linesPerPx = uLines * fwidth(uv.y);
+        float slFade = 1.0 - smoothstep(0.25, 0.5, linesPerPx);
         float sl = 0.5 + 0.5 * cos(uv.y * uLines * 6.28318);
-        col *= 1.0 - 0.24 * uCrt * sl;
+        col *= 1.0 - 0.24 * uCrt * sl * slFade;
+        col *= 1.0 - 0.06 * uCrt * (1.0 - slFade); // keep the dimming when lines fade
         float bar = exp(-pow(fract(uv.y * 0.7 - uTime * 0.11) - 0.5, 2.0) * 60.0);
         col *= 1.0 + 0.06 * uCrt * bar;
-        col *= 1.0 - 0.018 * uCrt * sin(uTime * 55.0);
+        // Slow, gentle flicker: fast sine flicker aliases into strobing at 30-60 fps.
+        col *= 1.0 - 0.012 * uCrt * (0.5 + 0.5 * sin(uTime * 7.0) * sin(uTime * 2.3));
 
         // Vignette + hover brighten
         col *= mix(1.0, 1.0 - dot(cc, cc) * 1.6, uCrt);
